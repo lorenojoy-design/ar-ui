@@ -113,10 +113,5 @@ a-scene{z-index:1}
     font-size: 13px;
     padding: 8px 12px;
   }
-}.top-left, .top-right, .bottom-center {
-  position: fixed;
-  z-index: 9999; /* taas para visible sa AR canvas */
 }
-
-
 
