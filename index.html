@@ -3,8 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>AR System UI</title>
- <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
 
   <!-- A-Frame + AR.js (Hiro marker) -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -19,13 +18,18 @@
 <body>
 
   <!-- AR scene (camera auto-starts over HTTPS / localhost) -->
- <a-scene
-  embedded
-  arjs="sourceType: webcam; sourceWidth: 1280; sourceHeight: 720; debugUIEnabled: false; mirror: true;"
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false">
-
-<a-entity camera="fov: 60" position="0 1.6 4"></a-entity>
+  <a-scene
+    embedded
+    arjs="sourceType: webcam; sourceWidth: 1280; sourceHeight: 720; debugUIEnabled: false; mirror: true;"
+    vr-mode-ui="enabled: false"
+    device-orientation-permission-ui="enabled: false">
+    
+    <a-marker preset="hiro">
+      <a-box position="0 0.5 0" scale="0.5 0.5 0.5" color="#21c78a"></a-box>
+    </a-marker>
+    
+    <a-entity camera="fov: 60" position="0 1.6 4"></a-entity>
+  </a-scene>
 
   <!-- Top Left -->
   <div class="top-left">
@@ -57,32 +61,7 @@
     </button>
   </div>
 
-  <!-- Map Panel -->
-  <div id="map-panel" class="glass-panel hidden">
-    <div class="panel-header">
-      <h3>Museum Map</h3>
-      <button id="close-map" class="icon-only" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
-    </div>
-    <div class="panel-body">
-      <p>Place your map image or navigation here.</p>
-    </div>
-  </div>
-
-  <!-- Language Menu -->
-  <div id="lang-menu" class="glass-panel hidden">
-    <ul>
-      <li data-lang="en"><i class="fa-solid fa-language"></i> English</li>
-      <li data-lang="fil"><i class="fa-solid fa-language"></i> Filipino</li>
-    </ul>
-  </div>
-
-  <!-- Toast -->
-  <div id="toast" class="toast hidden"></div>
-
   <!-- Scripts -->
   <script src="script.js"></script>
 </body>
 </html>
-
