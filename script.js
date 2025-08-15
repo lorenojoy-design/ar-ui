@@ -165,3 +165,23 @@ document.addEventListener("DOMContentLoaded", initCamera);
       }
     }
 };
+// Save camera settings in sessionStorage
+sessionStorage.setItem("camera-fov", 60);
+sessionStorage.setItem("camera-position", JSON.stringify([0, 1.6, 4]));
+
+// On load, retrieve and apply the settings
+window.addEventListener("load", function () {
+  const cameraElement = document.querySelector("a-entity[camera]");
+  
+  const fov = sessionStorage.getItem("camera-fov");
+  const position = JSON.parse(sessionStorage.getItem("camera-position"));
+  
+  if (fov) {
+    cameraElement.setAttribute('camera', 'fov', fov);
+  }
+  if (position) {
+    cameraElement.setAttribute('position', position.join(" "));
+  }
+});
+
+
