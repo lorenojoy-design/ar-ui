@@ -167,3 +167,9 @@ document.addEventListener("DOMContentLoaded", initCamera);
       }
     }
 };
+var sceneEl = document.querySelector('a-scene');
+sceneEl.addEventListener('loaded', function () {
+  sceneEl.style.width = window.innerWidth + 'px';
+  sceneEl.style.height = window.innerHeight + 'px';
+});
+
