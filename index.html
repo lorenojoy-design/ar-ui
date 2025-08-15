@@ -1,167 +1,87 @@
-// UI hooks
-const $ = (sel, ctx=document) => ctx.querySelector(sel);
-const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>AR System UI</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-const mapBtn   = $("#map-btn");
-const mapPanel = $("#map-panel");
-const closeMap = $("#close-map");
-const langBtn  = $("#lang-btn");
-const langMenu = $("#lang-menu");
-const soundBtn = $("#sound-btn");
-const cameraBtn= $("#camera-btn");
-const videoBtn = $("#video-btn");
-const resetBtn = $("#reset-btn");
-const toast    = $("#toast");
+  <!-- A-Frame + AR.js (Hiro marker) -->
+  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
 
-// map panel
-if (mapBtn && mapPanel && closeMap){
-  mapBtn.addEventListener("click", () => mapPanel.classList.toggle("hidden"));
-  closeMap.addEventListener("click", () => mapPanel.classList.add("hidden"));
-}
+  <!-- Font Awesome (icons) -->
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 
-// language menu
-if (langBtn && langMenu){
-  langBtn.addEventListener("click", () => langMenu.classList.toggle("hidden"));
-  $$("#lang-menu li").forEach(li=>{
-    li.addEventListener("click", ()=>{
-      showToast(`Language changed to ${li.dataset.lang?.toUpperCase() || li.textContent.trim()}`);
-      langMenu.classList.add("hidden");
-    });
-  });
-}
+  <!-- Styles -->
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
 
-// sound toggle (icon swap only; hook up to real audio later)
-if (soundBtn){
-  soundBtn.addEventListener("click", ()=>{
-    const icon = soundBtn.querySelector("i");
-    const on = icon.classList.contains("fa-volume-high");
-    icon.classList.toggle("fa-volume-high", !on);
-    icon.classList.toggle("fa-volume-xmark", on);
-    showToast(on ? "Sound Off" : "Sound On");
-  });
-}
-
-// camera & video (stubs – integrate with your capture pipeline later)
-// 📸 Snapshot
-if (cameraBtn) {
-  cameraBtn.addEventListener("click", () => {
-    const scene = document.querySelector("a-scene");
-    if (!scene || !scene.renderer || !scene.renderer.domElement) {
-      showToast("⚠️ AR scene not ready yet");
-      return;
-    }
-    const canvas = scene.renderer.domElement;
-    const imageData = canvas.toDataURL("image/png");
-
-    const link = document.createElement("a");
-    link.href = imageData;
-    link.download = `ar_snapshot_${Date.now()}.png`;
-    link.click();
-
-    showToast("📸 Snapshot saved");
-  });
-}
-
-// 🎥 Video Recording
-if (videoBtn) {
-  let recording = false;
-  let mediaRecorder;
-  let recordedChunks = [];
-
-  videoBtn.addEventListener("click", () => {
-    const scene = document.querySelector("a-scene");
-    if (!scene || !scene.renderer || !scene.renderer.domElement) {
-      showToast("⚠️ AR scene not ready yet");
-      return;
-    }
-    const icon = videoBtn.querySelector("i");
-
-    if (!recording) {
-      const stream = scene.renderer.domElement.captureStream(30);
-      mediaRecorder = new MediaRecorder(stream, { mimeType: "video/webm" });
-
-      recordedChunks = [];
-      mediaRecorder.ondataavailable = e => {
-        if (e.data.size > 0) recordedChunks.push(e.data);
-      };
-      mediaRecorder.onstop = () => {
-        const blob = new Blob(recordedChunks, { type: "video/webm" });
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `ar_video_${Date.now()}.webm`;
-        a.click();
-        URL.revokeObjectURL(url);
-      };
-
-      mediaRecorder.start();
-      icon.classList.replace("fa-video", "fa-stop");
-      showToast("🎥 Recording started");
-      recording = true;
-    } else {
-      mediaRecorder.stop();
-      icon.classList.replace("fa-stop", "fa-video");
-      showToast("🛑 Recording saved");
-      recording = false;
-    }
-  });
-}
+  <!-- AR scene (camera auto-starts over HTTPS / localhost) -->
+  <a-scene embedded
+  arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
+  <a-marker preset="hiro">
+    <a-box position="0 0.25 0" scale="0.5 0.5 0.5" color="#21c78a"></a-box>
+  </a-marker>
+  <a-entity camera></a-entity>
+</a-scene>
 
 
-// reset view (stub – useful if you later add transforms)
-if (resetBtn){ resetBtn.addEventListener("click", ()=> showToast("View reset")); }
+  <!-- Top Left -->
+  <div class="top-left">
+    <button id="map-btn" class="btn" title="Map">
+      <i class="fa-solid fa-map"></i>
+    </button>
+  </div>
 
-// toast helper
-function showToast(msg){
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.classList.remove("hidden");
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=> toast.classList.add("hidden"), 1800);
-}
+  <!-- Top Right -->
+  <div class="top-right">
+    <button id="lang-btn" class="btn" title="Language">
+      <i class="fa-solid fa-globe"></i>
+    </button>
+    <button id="sound-btn" class="btn" title="Toggle Sound">
+      <i class="fa-solid fa-volume-high"></i>
+    </button>
+  </div>
 
-async function initCamera() {
-  try {
-    let constraints = {
-      video: {
-        facingMode: /Mobi|Android/i.test(navigator.userAgent)
-          ? { ideal: "environment" } // phone → back cam
-          : { ideal: "user" }        // desktop/laptop → front cam
-      },
-      audio: false
-    };
+  <!-- Bottom Center -->
+  <div class="bottom-center">
+    <button id="camera-btn" class="btn" title="Take Photo">
+      <i class="fa-solid fa-camera"></i>
+    </button>
+    <button id="video-btn" class="btn" title="Record Video">
+      <i class="fa-solid fa-video"></i>
+    </button>
+    <button id="reset-btn" class="btn" title="Reset View">
+      <i class="fa-solid fa-rotate-right"></i>
+    </button>
+  </div>
 
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const videoEl = document.querySelector("video") || document.createElement("video");
-    videoEl.srcObject = stream;
-    videoEl.play();
-  } catch (err) {
-    console.error("Camera init error:", err);
-  }
-}
+  <!-- Map Panel -->
+  <div id="map-panel" class="glass-panel hidden">
+    <div class="panel-header">
+      <h3>Museum Map</h3>
+      <button id="close-map" class="icon-only" title="Close">
+        <i class="fa-solid fa-xmark"></i>
+      </button>
+    </div>
+    <div class="panel-body">
+      <p>Place your map image or navigation here.</p>
+    </div>
+  </div>
 
-document.addEventListener("DOMContentLoaded", initCamera);
- window.onload = function() {
-    var arToolkitSource = new THREEx.ArToolkitSource({
-      sourceType: 'webcam',
-      facingMode: { exact: 'environment' } // Force back camera
-    });
+  <!-- Language Menu -->
+  <div id="lang-menu" class="glass-panel hidden">
+    <ul>
+      <li data-lang="en"><i class="fa-solid fa-language"></i> English</li>
+      <li data-lang="fil"><i class="fa-solid fa-language"></i> Filipino</li>
+    </ul>
+  </div>
 
-    arToolkitSource.init(function onReady(){
-      setTimeout(() => {
-        onResize();
-      }, 2000);
-    });
+  <!-- Toast -->
+  <div id="toast" class="toast hidden"></div>
 
-    window.addEventListener('resize', function(){
-      onResize();
-    });
-
-    function onResize(){
-      arToolkitSource.onResizeElement();
-      arToolkitSource.copyElementSizeTo(renderer.domElement);
-      if(arToolkitContext.arController !== null){
-        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
-      }
-    }
-};
+  <!-- Scripts -->
+  <script src="script.js"></script>
+</body>
+</html>
