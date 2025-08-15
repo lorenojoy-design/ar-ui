@@ -18,18 +18,13 @@
 <body>
 
   <!-- AR scene (camera auto-starts over HTTPS / localhost) -->
-<a-scene 
-  embedded
-  arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false; sourceWidth: 1280; sourceHeight: 720;">
-  <!-- 3D Objects and Camera -->
+  <a-scene embedded
+  arjs="sourceType: webcam; debugUIEnabled: false; trackingMethod: best;">
   <a-marker preset="hiro">
-    <a-box position="0 0.5 0" scale="0.5 0.5 0.5" color="#21c78a"></a-box>
+    <a-box position="0 0.25 0" scale="0.5 0.5 0.5" color="#21c78a"></a-box>
   </a-marker>
-
-  <!-- Camera settings (adjusted for mobile) -->
-  <a-entity camera="fov: 60" position="0 1.6 5"></a-entity>
+  <a-entity camera></a-entity>
 </a-scene>
-
 
 
   <!-- Top Left -->
@@ -90,6 +85,3 @@
   <script src="script.js"></script>
 </body>
 </html>
-
-
-
