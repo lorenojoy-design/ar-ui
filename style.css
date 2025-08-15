@@ -1,118 +1,117 @@
-/* Reset */
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
-body {
-    background: #000;
-    font-family: Arial, sans-serif;
-    overflow: hidden;
+:root{
+  --bg:#0b0f0e;            /* near-black */
+  --glass:rgba(24, 39, 34, .6);
+  --accent:#21c78a;        /* dark green accent */
+  --accent-2:#0ea371;
+  --text:#eaf7f1;
+  --muted:#9bb4a8;
+  --shadow:0 10px 30px rgba(33,199,138,.25);
 }
 
-/* Fullscreen Camera Feed */
-#camera-feed {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    object-fit: cover;
-    z-index: 1;
+/* reset */
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;
+  overflow:hidden;
 }
 
-/* Floating Button Positions */
-.top-left, .top-right, .bottom-center {
-    position: absolute;
-    display: flex;
-    gap: 10px;
-    z-index: 10;
+/* AR canvas sits behind UI; a-scene creates its own video/canvas */
+a-scene{z-index:1}
+
+/* buttons layout */
+.top-left,.top-right,.bottom-center{
+  position:absolute; display:flex; gap:.75rem; z-index:15;
 }
-.top-left {
-    top: 15px;
-    left: 15px;
+.top-left{top:12px; left:12px}
+.top-right{top:12px; right:12px}
+.bottom-center{bottom:18px; left:50%; transform:translateX(-50%)}
+
+/* buttons */
+.btn, .icon-only{
+  display:inline-flex; align-items:center; justify-content:center;
+  width:48px; height:48px; border:none; border-radius:14px; cursor:pointer;
+  background:var(--glass); color:var(--text); backdrop-filter:blur(10px);
+  -webkit-backdrop-filter:blur(10px); box-shadow:var(--shadow);
+  transition:transform .15s ease, background .2s ease, color .2s ease, box-shadow .2s ease, outline .2s ease;
 }
-.top-right {
-    top: 15px;
-    right: 15px;
+.btn i, .icon-only i{font-size:18px}
+.btn:hover,.icon-only:hover{ transform:translateY(-1px); background:rgba(33,199,138,.18); color:#fff; box-shadow:0 14px 34px rgba(33,199,138,.35)}
+.btn:active,.icon-only:active{ transform:translateY(0) scale(.98)}
+.btn:focus-visible,.icon-only:focus-visible{ outline:2px solid var(--accent); outline-offset:2px}
+
+/* panels */
+.glass-panel{
+  position:absolute; z-index:20; min-width:260px; max-width:min(92vw,420px);
+  background:var(--glass); border:1px solid rgba(33,199,138,.25);
+  border-radius:16px; padding:14px; box-shadow:var(--shadow); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px);
 }
-.bottom-center {
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
+#map-panel{ top:50%; left:50%; transform:translate(-50%,-50%) }
+.panel-header{ display:flex; align-items:center; justify-content:space-between; gap:8px; margin-bottom:8px }
+.panel-header h3{ font-size:16px; letter-spacing:.3px }
+.panel-body{ color:var(--muted); font-size:14px; line-height:1.4 }
+.icon-only{ width:40px; height:40px; border-radius:12px }
+
+/* language menu */
+#lang-menu{ top:64px; right:12px }
+#lang-menu ul{ list-style:none }
+#lang-menu li{
+  display:flex; align-items:center; gap:.5rem; padding:10px 12px; border-radius:10px; cursor:pointer;
+  color:var(--text);
+}
+#lang-menu li + li{ margin-top:4px }
+#lang-menu li:hover{ background:rgba(33,199,138,.18) }
+
+/* toast */
+.toast{
+  position:absolute; bottom:84px; left:50%; transform:translateX(-50%);
+  background:var(--glass); border:1px solid rgba(33,199,138,.25);
+  color:var(--text); padding:10px 14px; border-radius:12px; box-shadow:var(--shadow);
+  font-size:14px; z-index:25; white-space:nowrap;
 }
 
-/* Modern Buttons */
-button {
-    background: rgba(255, 255, 255, 0.1);
-    color: white;
-    border: none;
-    padding: 12px;
-    font-size: 1.3em;
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(8px);
-    transition: background 0.3s, transform 0.2s;
-}
-button:hover {
-    background: rgba(255,255,255,0.25);
-    transform: scale(1.1);
-}
+/* utilities */
+.hidden{ display:none !important }
 
-/* Panels & Menus */
-.glass-panel {
-    background: rgba(255, 255, 255, 0.08);
+/* Mobile-friendly adjustments */
+@media (max-width: 600px) {
+  /* Buttons: mas madaling pindutin sa phone */
+  .btn, .icon-only {
+    width: 44px;
+    height: 44px;
     border-radius: 12px;
-    padding: 15px;
-    backdrop-filter: blur(12px);
-    color: white;
-    z-index: 20;
+  }
+  .btn i, .icon-only i {
+    font-size: 16px;
+  }
+
+  /* Button groups: bawas spacing para hindi lumagpas */
+  .top-left, .top-right, .bottom-center {
+    gap: 0.5rem;
+  }
+
+  /* Panels: sakto sa phone width */
+  .glass-panel {
+    min-width: auto;
+    max-width: 94vw;
+    padding: 12px;
+    font-size: 14px;
+  }
+  .panel-header h3 {
+    font-size: 15px;
+  }
+  .panel-body {
+    font-size: 13px;
+    line-height: 1.3;
+  }
+
+  /* Toast: bawas laki para hindi matakpan */
+  .toast {
+    bottom: 70px;
+    font-size: 13px;
+    padding: 8px 12px;
+  }
 }
 
-/* Map Panel */
-#map-panel {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    width: 300px;
-    transform: translate(-50%, -50%);
-}
-.close-btn {
-    margin-top: 10px;
-    background: rgba(255,0,0,0.2);
-}
-
-/* Language Menu */
-#lang-menu {
-    position: absolute;
-    top: 60px;
-    right: 15px;
-}
-#lang-menu ul {
-    list-style: none;
-}
-#lang-menu li {
-    padding: 8px;
-    cursor: pointer;
-    border-bottom: 1px solid rgba(255,255,255,0.1);
-}
-#lang-menu li:hover {
-    background: rgba(255,255,255,0.15);
-}
-
-/* Toast Notification */
-#toast {
-    position: absolute;
-    bottom: 80px;
-    left: 50%;
-    transform: translateX(-50%);
-    padding: 10px 20px;
-}
-
-/* Hidden Utility */
-.hidden {
-    display: none;
-}
