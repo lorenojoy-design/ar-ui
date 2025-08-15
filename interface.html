@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AR System UI</title>
+<link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/mind-ar@1.2.4/dist/mindar-image-aframe.prod.js"></script>
+</head>
+<body>
+
+<!-- AR Scene with camera feed -->
+<body>
+    <a-scene
+        embedded
+        arjs="sourceType: webcam; debugUIEnabled: false;"
+        vr-mode-ui="enabled: false"
+        renderer="logarithmicDepthBuffer: true;"
+    >
+        <a-marker preset="hiro">
+            <a-box position="0 0.5 0" material="color: red;"></a-box>
+        </a-marker>
+        <a-entity camera></a-entity>
+    </a-scene>
+
+    <!-- UI buttons dito -->
+</body>
+<!-- Top Left -->
+<div class="top-left">
+    <button id="map-btn" title="Map Navigation"><i class="fas fa-map"></i></button>
+</div>
+
+<!-- Top Right -->
+<div class="top-right">
+    <button id="lang-btn" title="Language"><i class="fas fa-globe"></i></button>
+    <button id="sound-btn" title="Toggle Sound"><i class="fas fa-volume-up"></i></button>
+</div>
+
+<!-- Bottom Center -->
+<div class="bottom-center">
+    <button id="camera-btn" title="Take Photo"><i class="fas fa-camera"></i></button>
+    <button id="video-btn" title="Record Video"><i class="fas fa-video"></i></button>
+    <button id="reset-btn" title="Reset View"><i class="fas fa-sync-alt"></i></button>
+</div>
+
+<!-- Map Panel -->
+<div id="map-panel" class="hidden glass-panel">
+    <h3>Museum Map</h3>
+    <p>[Map image or navigation here]</p>
+    <button id="close-map" class="close-btn"><i class="fas fa-times"></i></button>
+</div>
+
+<!-- Language Menu -->
+<div id="lang-menu" class="hidden glass-panel">
+    <ul>
+        <li data-lang="en">English</li>
+        <li data-lang="fil">Filipino</li>
+    </ul>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="hidden glass-panel"></div>
+
+<script src="script.js"></script>
+</body>
+</html>

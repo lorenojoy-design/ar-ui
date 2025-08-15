@@ -1,0 +1,118 @@
+/* Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+body {
+    background: #000;
+    font-family: Arial, sans-serif;
+    overflow: hidden;
+}
+
+/* Fullscreen Camera Feed */
+#camera-feed {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    object-fit: cover;
+    z-index: 1;
+}
+
+/* Floating Button Positions */
+.top-left, .top-right, .bottom-center {
+    position: absolute;
+    display: flex;
+    gap: 10px;
+    z-index: 10;
+}
+.top-left {
+    top: 15px;
+    left: 15px;
+}
+.top-right {
+    top: 15px;
+    right: 15px;
+}
+.bottom-center {
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+/* Modern Buttons */
+button {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    padding: 12px;
+    font-size: 1.3em;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(8px);
+    transition: background 0.3s, transform 0.2s;
+}
+button:hover {
+    background: rgba(255,255,255,0.25);
+    transform: scale(1.1);
+}
+
+/* Panels & Menus */
+.glass-panel {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 12px;
+    padding: 15px;
+    backdrop-filter: blur(12px);
+    color: white;
+    z-index: 20;
+}
+
+/* Map Panel */
+#map-panel {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 300px;
+    transform: translate(-50%, -50%);
+}
+.close-btn {
+    margin-top: 10px;
+    background: rgba(255,0,0,0.2);
+}
+
+/* Language Menu */
+#lang-menu {
+    position: absolute;
+    top: 60px;
+    right: 15px;
+}
+#lang-menu ul {
+    list-style: none;
+}
+#lang-menu li {
+    padding: 8px;
+    cursor: pointer;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+}
+#lang-menu li:hover {
+    background: rgba(255,255,255,0.15);
+}
+
+/* Toast Notification */
+#toast {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    padding: 10px 20px;
+}
+
+/* Hidden Utility */
+.hidden {
+    display: none;
+}
