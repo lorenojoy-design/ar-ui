@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>AR System UI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- A-Frame + AR.js (Hiro marker) -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
@@ -20,14 +20,17 @@
   <!-- AR scene (camera auto-starts over HTTPS / localhost) -->
   <a-scene
  embedded
-  arjs="sourceType: webcam; facingMode: environment;"
+  arjs="sourceType: webcam; sourceWidth: 640; sourceHeight: 480; debugUIEnabled: false;"
+
   vr-mode-ui="enabled: false"
   device-orientation-permission-ui="enabled: false">
   >
     <a-marker preset="hiro">
-      <a-box position="0 0.5 0" color="#21c78a"></a-box>
+     <a-box position="0 0.5 0" scale="0.5 0.5 0.5" color="#21c78a"></a-box>
+
     </a-marker>
-    <a-entity camera></a-entity>
+    <a-entity camera="fov: 80" position="0 1.6 3"></a-entity>
+
   </a-scene>
 
   <!-- Top Left -->
