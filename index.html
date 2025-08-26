@@ -5,78 +5,65 @@
   <title>AR System UI</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <!-- A-Frame + AR.js (Hiro marker) -->
+  <!-- A-Frame & AR.js -->
   <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
   <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+  <script src="https://unpkg.com/aframe-gesture-detector/dist/aframe-gesture-detector.min.js"></script>
 
-  <!-- Font Awesome (icons) -->
+  <!-- Font Awesome -->
   <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
 
-  <!-- Styles -->
+  <!-- Style -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- AR scene (camera auto-starts over HTTPS / localhost) -->
-  <a-scene
- embedded
-  arjs="sourceType: webcam; sourceWidth: 640; sourceHeight: 480; debugUIEnabled: false;"
-
-  vr-mode-ui="enabled: false"
-  device-orientation-permission-ui="enabled: false">
-  >
+  <!-- AR Scene -->
+  <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
     <a-marker preset="hiro">
-     <a-box position="0 0.5 0" scale="0.5 0.5 0.5" color="#21c78a"></a-box>
-
+      <a-entity 
+        id="model"
+        gltf-model="path-to-model.glb"
+        scale="0.5 0.5 0.5"
+        position="0 0 0"
+        rotation="0 0 0"
+        gesture-detector
+        interactive-model>
+      </a-entity>
+      <a-sound id="markerSound" src="path-to-sound.mp3" autoplay="false"></a-sound>
     </a-marker>
-    <a-entity camera="fov: 80" position="0 1.6 3"></a-entity>
-
+    <a-entity camera></a-entity>
   </a-scene>
 
-  <!-- Top Left -->
+  <!-- UI: Top Left -->
   <div class="top-left">
-    <button id="map-btn" class="btn" title="Map">
-      <i class="fa-solid fa-map"></i>
-    </button>
+    <button id="map-btn" class="btn" title="Map"><i class="fa-solid fa-map"></i></button>
   </div>
 
-  <!-- Top Right -->
+  <!-- UI: Top Right -->
   <div class="top-right">
-    <button id="lang-btn" class="btn" title="Language">
-      <i class="fa-solid fa-globe"></i>
-    </button>
-    <button id="sound-btn" class="btn" title="Toggle Sound">
-      <i class="fa-solid fa-volume-high"></i>
-    </button>
+    <button id="lang-btn" class="btn" title="Language"><i class="fa-solid fa-globe"></i></button>
+    <button id="sound-btn" class="btn" title="Toggle Sound"><i class="fa-solid fa-volume-high"></i></button>
   </div>
 
-  <!-- Bottom Center -->
+  <!-- UI: Bottom Center -->
   <div class="bottom-center">
-    <button id="camera-btn" class="btn" title="Take Photo">
-      <i class="fa-solid fa-camera"></i>
-    </button>
-    <button id="video-btn" class="btn" title="Record Video">
-      <i class="fa-solid fa-video"></i>
-    </button>
-    <button id="reset-btn" class="btn" title="Reset View">
-      <i class="fa-solid fa-rotate-right"></i>
-    </button>
+    <button id="camera-btn" class="btn" title="Take Photo"><i class="fa-solid fa-camera"></i></button>
+    <button id="video-btn" class="btn" title="Record Video"><i class="fa-solid fa-video"></i></button>
+    <button id="reset-btn" class="btn" title="Reset View"><i class="fa-solid fa-rotate-right"></i></button>
   </div>
 
-  <!-- Map Panel -->
+  <!-- Panels -->
   <div id="map-panel" class="glass-panel hidden">
     <div class="panel-header">
       <h3>Museum Map</h3>
-      <button id="close-map" class="icon-only" title="Close">
-        <i class="fa-solid fa-xmark"></i>
-      </button>
+      <button id="close-map" class="icon-only" title="Close"><i class="fa-solid fa-xmark"></i></button>
     </div>
     <div class="panel-body">
       <p>Place your map image or navigation here.</p>
     </div>
   </div>
 
-  <!-- Language Menu -->
   <div id="lang-menu" class="glass-panel hidden">
     <ul>
       <li data-lang="en"><i class="fa-solid fa-language"></i> English</li>
@@ -84,10 +71,13 @@
     </ul>
   </div>
 
+  <!-- Display text -->
+  <div id="lang-text" class="lang-text">Welcome</div>
+
   <!-- Toast -->
   <div id="toast" class="toast hidden"></div>
 
-  <!-- Scripts -->
+  <!-- JS -->
   <script src="script.js"></script>
 </body>
 </html>
