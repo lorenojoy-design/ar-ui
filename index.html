@@ -4,7 +4,9 @@
     <meta charset="utf-8" />
     <title>AR Museum App</title>
     <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.2.1/aframe/build/aframe-ar.js"></script>
+    <!-- ✅ Updated AR.js (latest build) -->
+    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+
     <style>
       body {
         margin: 0;
@@ -16,6 +18,7 @@
         top: 10px;
         left: 10px;
         z-index: 9999;
+        pointer-events: auto; /* ✅ Ensure UI clicks work */
       }
       button {
         margin: 5px;
@@ -38,6 +41,7 @@
         border-radius: 8px;
         display: none;
         z-index: 9999;
+        pointer-events: auto;
       }
     </style>
   </head>
@@ -46,6 +50,8 @@
     <a-scene
       embedded
       arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+      vr-mode-ui="enabled: false"
+      renderer="antialias: true; alpha: true"
     >
       <a-marker preset="hiro">
         <a-box
@@ -87,10 +93,16 @@
       let currentLang = "en";
       let soundOn = true;
 
+      // ✅ Helper to safely get canvas
+      function getCanvas() {
+        const sceneEl = document.querySelector("a-scene");
+        return sceneEl && sceneEl.renderer ? sceneEl.renderer.domElement : null;
+      }
+
       // ✅ Snapshot
       snapshotBtn.addEventListener("click", () => {
-        const sceneEl = document.querySelector("a-scene");
-        const canvas = sceneEl.renderer.domElement;
+        const canvas = getCanvas();
+        if (!canvas) return alert("⚠️ Scene not ready yet!");
         const dataUrl = canvas.toDataURL("image/png");
         const a = document.createElement("a");
         a.href = dataUrl;
@@ -100,8 +112,8 @@
 
       // ✅ Video Recording
       recordBtn.addEventListener("click", () => {
-        const sceneEl = document.querySelector("a-scene");
-        const canvas = sceneEl.renderer.domElement;
+        const canvas = getCanvas();
+        if (!canvas) return alert("⚠️ Scene not ready yet!");
 
         if (!isRecording) {
           recorder = new MediaRecorder(canvas.captureStream(30), { mimeType: "video/webm" });
