@@ -1,83 +1,151 @@
 <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>AR System UI</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>AR Museum App</title>
+    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+    <script src="https://cdn.rawgit.com/jeromeetienne/AR.js/2.2.1/aframe/build/aframe-ar.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+        font-family: Arial, sans-serif;
+      }
+      #ui {
+        position: absolute;
+        top: 10px;
+        left: 10px;
+        z-index: 9999;
+      }
+      button {
+        margin: 5px;
+        padding: 10px;
+        border: none;
+        border-radius: 8px;
+        background: #007bff;
+        color: white;
+        cursor: pointer;
+      }
+      button:hover {
+        background: #0056b3;
+      }
+      #mapPanel {
+        position: absolute;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(255, 255, 255, 0.9);
+        padding: 10px;
+        border-radius: 8px;
+        display: none;
+        z-index: 9999;
+      }
+    </style>
+  </head>
+  <body>
+    <!-- ✅ AR scene -->
+    <a-scene
+      embedded
+      arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
+    >
+      <a-marker preset="hiro">
+        <a-box
+          position="0 0.5 0"
+          material="color: red"
+          animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
+        ></a-box>
+      </a-marker>
+      <a-entity camera></a-entity>
+    </a-scene>
 
-  <!-- A-Frame & AR.js -->
-  <script src="https://aframe.io/releases/1.4.2/aframe.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
-  <script src="https://unpkg.com/aframe-gesture-detector/dist/aframe-gesture-detector.min.js"></script>
-
-  <!-- Font Awesome -->
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" rel="stylesheet"/>
-
-  <!-- Style -->
-  <link rel="stylesheet" href="style.css" />
-</head>
-<body>
-
-  <!-- AR Scene -->
-  <a-scene embedded arjs="sourceType: webcam;" vr-mode-ui="enabled: false" device-orientation-permission-ui="enabled: false">
-    <a-marker preset="hiro">
-      <a-entity 
-        id="model"
-        gltf-model="path-to-model.glb"
-        scale="0.5 0.5 0.5"
-        position="0 0 0"
-        rotation="0 0 0"
-        gesture-detector
-        interactive-model>
-      </a-entity>
-      <a-sound id="markerSound" src="path-to-sound.mp3" autoplay="false"></a-sound>
-    </a-marker>
-    <a-entity camera></a-entity>
-  </a-scene>
-
-  <!-- UI: Top Left -->
-  <div class="top-left">
-    <button id="map-btn" class="btn" title="Map"><i class="fa-solid fa-map"></i></button>
-  </div>
-
-  <!-- UI: Top Right -->
-  <div class="top-right">
-    <button id="lang-btn" class="btn" title="Language"><i class="fa-solid fa-globe"></i></button>
-    <button id="sound-btn" class="btn" title="Toggle Sound"><i class="fa-solid fa-volume-high"></i></button>
-  </div>
-
-  <!-- UI: Bottom Center -->
-  <div class="bottom-center">
-    <button id="camera-btn" class="btn" title="Take Photo"><i class="fa-solid fa-camera"></i></button>
-    <button id="video-btn" class="btn" title="Record Video"><i class="fa-solid fa-video"></i></button>
-    <button id="reset-btn" class="btn" title="Reset View"><i class="fa-solid fa-rotate-right"></i></button>
-  </div>
-
-  <!-- Panels -->
-  <div id="map-panel" class="glass-panel hidden">
-    <div class="panel-header">
-      <h3>Museum Map</h3>
-      <button id="close-map" class="icon-only" title="Close"><i class="fa-solid fa-xmark"></i></button>
+    <!-- ✅ UI -->
+    <div id="ui">
+      <button id="snapshotBtn">📸 Snapshot</button>
+      <button id="recordBtn">🎥 Start Recording</button>
+      <button id="mapBtn">🗺️ Map</button>
+      <button id="langBtn">🌐 Language</button>
+      <button id="soundBtn">🔊 Sound</button>
+      <button id="resetBtn">♻️ Reset</button>
     </div>
-    <div class="panel-body">
-      <p>Place your map image or navigation here.</p>
+
+    <!-- ✅ Map Panel -->
+    <div id="mapPanel">
+      <p><strong>Museum Map</strong></p>
+      <p>[Map content here]</p>
     </div>
-  </div>
 
-  <div id="lang-menu" class="glass-panel hidden">
-    <ul>
-      <li data-lang="en"><i class="fa-solid fa-language"></i> English</li>
-      <li data-lang="fil"><i class="fa-solid fa-language"></i> Filipino</li>
-    </ul>
-  </div>
+    <script>
+      const snapshotBtn = document.getElementById("snapshotBtn");
+      const recordBtn = document.getElementById("recordBtn");
+      const mapBtn = document.getElementById("mapBtn");
+      const langBtn = document.getElementById("langBtn");
+      const soundBtn = document.getElementById("soundBtn");
+      const resetBtn = document.getElementById("resetBtn");
+      const mapPanel = document.getElementById("mapPanel");
 
-  <!-- Display text -->
-  <div id="lang-text" class="lang-text">Welcome</div>
+      let recorder, chunks = [];
+      let isRecording = false;
+      let currentLang = "en";
+      let soundOn = true;
 
-  <!-- Toast -->
-  <div id="toast" class="toast hidden"></div>
+      // ✅ Snapshot
+      snapshotBtn.addEventListener("click", () => {
+        const sceneEl = document.querySelector("a-scene");
+        const canvas = sceneEl.renderer.domElement;
+        const dataUrl = canvas.toDataURL("image/png");
+        const a = document.createElement("a");
+        a.href = dataUrl;
+        a.download = "snapshot.png";
+        a.click();
+      });
 
-  <!-- JS -->
-  <script src="script.js"></script>
-</body>
+      // ✅ Video Recording
+      recordBtn.addEventListener("click", () => {
+        const sceneEl = document.querySelector("a-scene");
+        const canvas = sceneEl.renderer.domElement;
+
+        if (!isRecording) {
+          recorder = new MediaRecorder(canvas.captureStream(30), { mimeType: "video/webm" });
+          recorder.ondataavailable = e => chunks.push(e.data);
+          recorder.onstop = () => {
+            const blob = new Blob(chunks, { type: "video/webm" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "recording.webm";
+            a.click();
+            chunks = [];
+          };
+          recorder.start();
+          isRecording = true;
+          recordBtn.textContent = "⏹ Stop Recording";
+        } else {
+          recorder.stop();
+          isRecording = false;
+          recordBtn.textContent = "🎥 Start Recording";
+        }
+      });
+
+      // ✅ Map Toggle
+      mapBtn.addEventListener("click", () => {
+        mapPanel.style.display = mapPanel.style.display === "none" ? "block" : "none";
+      });
+
+      // ✅ Language Toggle
+      langBtn.addEventListener("click", () => {
+        currentLang = currentLang === "en" ? "jp" : "en";
+        alert("Language switched to: " + (currentLang === "en" ? "English" : "Japanese"));
+      });
+
+      // ✅ Sound Toggle
+      soundBtn.addEventListener("click", () => {
+        soundOn = !soundOn;
+        alert("Sound " + (soundOn ? "On" : "Off"));
+      });
+
+      // ✅ Reset
+      resetBtn.addEventListener("click", () => {
+        location.reload();
+      });
+    </script>
+  </body>
 </html>
