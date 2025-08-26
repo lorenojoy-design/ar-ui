@@ -1,68 +1,96 @@
-// UI hooks
-const $ = (sel, ctx=document) => ctx.querySelector(sel);
-const $$ = (sel, ctx=document) => Array.from(ctx.querySelectorAll(sel));
+// Quick selector shortcuts
+const $ = (sel, ctx = document) => ctx.querySelector(sel);
+const $$ = (sel, ctx = document) => Array.from(ctx.querySelectorAll(sel));
 
-const mapBtn   = $("#map-btn");
-const mapPanel = $("#map-panel");
-const closeMap = $("#close-map");
-const langBtn  = $("#lang-btn");
-const langMenu = $("#lang-menu");
-const soundBtn = $("#sound-btn");
-const cameraBtn= $("#camera-btn");
-const videoBtn = $("#video-btn");
-const resetBtn = $("#reset-btn");
-const toast    = $("#toast");
+// UI elements
+const mapBtn    = $("#map-btn");
+const mapPanel  = $("#map-panel");
+const closeMap  = $("#close-map");
+const langBtn   = $("#lang-btn");
+const langMenu  = $("#lang-menu");
+const soundBtn  = $("#sound-btn");
+const cameraBtn = $("#camera-btn");
+const videoBtn  = $("#video-btn");
+const resetBtn  = $("#reset-btn");
+const toast     = $("#toast");
+const langText  = $("#lang-text");
 
-// map panel
-if (mapBtn && mapPanel && closeMap){
+// Multilingual text data (example)
+const textData = {
+  en: "Welcome to the exhibit!",
+  fil: "Maligayang pagdating sa eksibit!"
+};
+
+// 🔁 Update language text
+function updateLanguage(lang) {
+  langText.textContent = textData[lang] || "Text not available.";
+}
+
+// Toast helper
+function showToast(msg) {
+  if (!toast) return;
+  toast.textContent = msg;
+  toast.classList.remove("hidden");
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.add("hidden"), 2000);
+}
+
+// 🗺️ Map Panel Toggle
+if (mapBtn && mapPanel && closeMap) {
   mapBtn.addEventListener("click", () => mapPanel.classList.toggle("hidden"));
   closeMap.addEventListener("click", () => mapPanel.classList.add("hidden"));
 }
 
-// language menu
-if (langBtn && langMenu){
+// 🌐 Language Selector
+if (langBtn && langMenu) {
   langBtn.addEventListener("click", () => langMenu.classList.toggle("hidden"));
-  $$("#lang-menu li").forEach(li=>{
-    li.addEventListener("click", ()=>{
-      showToast(`Language changed to ${li.dataset.lang?.toUpperCase() || li.textContent.trim()}`);
+  $$("#lang-menu li").forEach(li => {
+    li.addEventListener("click", () => {
+      const lang = li.dataset.lang;
+      updateLanguage(lang);
+      showToast(`Language: ${lang.toUpperCase()}`);
       langMenu.classList.add("hidden");
     });
   });
 }
 
-// sound toggle (icon swap only; hook up to real audio later)
-if (soundBtn){
-  soundBtn.addEventListener("click", ()=>{
+// 🔊 Sound Toggle
+if (soundBtn) {
+  soundBtn.addEventListener("click", () => {
+    const sound = $("#markerSound");
     const icon = soundBtn.querySelector("i");
     const on = icon.classList.contains("fa-volume-high");
+
+    if (sound) {
+      if (on) sound.components.sound.pauseSound();
+      else sound.components.sound.playSound();
+    }
+
     icon.classList.toggle("fa-volume-high", !on);
     icon.classList.toggle("fa-volume-xmark", on);
-    showToast(on ? "Sound Off" : "Sound On");
+    showToast(on ? "🔇 Sound Off" : "🔊 Sound On");
   });
 }
 
-// camera & video (stubs – integrate with your capture pipeline later)
-// 📸 Snapshot
+// 📸 Take Snapshot
 if (cameraBtn) {
   cameraBtn.addEventListener("click", () => {
     const scene = document.querySelector("a-scene");
     if (!scene || !scene.renderer || !scene.renderer.domElement) {
-      showToast("⚠️ AR scene not ready yet");
+      showToast("⚠️ AR scene not ready");
       return;
     }
     const canvas = scene.renderer.domElement;
     const imageData = canvas.toDataURL("image/png");
-
     const link = document.createElement("a");
     link.href = imageData;
-    link.download = `ar_snapshot_${Date.now()}.png`;
+    link.download = `snapshot_${Date.now()}.png`;
     link.click();
-
     showToast("📸 Snapshot saved");
   });
 }
 
-// 🎥 Video Recording
+// 🎥 Record Video
 if (videoBtn) {
   let recording = false;
   let mediaRecorder;
@@ -70,11 +98,12 @@ if (videoBtn) {
 
   videoBtn.addEventListener("click", () => {
     const scene = document.querySelector("a-scene");
+    const icon = videoBtn.querySelector("i");
+
     if (!scene || !scene.renderer || !scene.renderer.domElement) {
-      showToast("⚠️ AR scene not ready yet");
+      showToast("⚠️ AR scene not ready");
       return;
     }
-    const icon = videoBtn.querySelector("i");
 
     if (!recording) {
       const stream = scene.renderer.domElement.captureStream(30);
@@ -107,81 +136,20 @@ if (videoBtn) {
   });
 }
 
-
-// reset view (stub – useful if you later add transforms)
-if (resetBtn){ resetBtn.addEventListener("click", ()=> showToast("View reset")); }
-
-// toast helper
-function showToast(msg){
-  if (!toast) return;
-  toast.textContent = msg;
-  toast.classList.remove("hidden");
-  clearTimeout(showToast._t);
-  showToast._t = setTimeout(()=> toast.classList.add("hidden"), 1800);
-}
-
-async function initCamera() {
-  try {
-    let constraints = {
-      video: {
-        facingMode: /Mobi|Android/i.test(navigator.userAgent)
-          ? { ideal: "environment" } // phone → back cam
-          : { ideal: "user" }        // desktop/laptop → front cam
-      },
-      audio: false
-    };
-
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const videoEl = document.querySelector("video") || document.createElement("video");
-    videoEl.srcObject = stream;
-    videoEl.play();
-  } catch (err) {
-    console.error("Camera init error:", err);
-  }
-}
-
-document.addEventListener("DOMContentLoaded", initCamera);
- window.onload = function() {
-    var arToolkitSource = new THREEx.ArToolkitSource({
-      sourceType: 'webcam',
-      facingMode: { exact: 'environment' } // Force back camera
-    });
-
-    arToolkitSource.init(function onReady(){
-      setTimeout(() => {
-        onResize();
-      }, 2000);
-    });
-
-    window.addEventListener('resize', function(){
-      onResize();
-    });
-
-    function onResize(){
-      arToolkitSource.onResizeElement();
-      arToolkitSource.copyElementSizeTo(renderer.domElement);
-      if(arToolkitContext.arController !== null){
-        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
-      }
+// ♻️ Reset 3D Model
+if (resetBtn) {
+  resetBtn.addEventListener("click", () => {
+    const model = $("#model");
+    if (model) {
+      model.setAttribute("rotation", "0 0 0");
+      model.setAttribute("scale", "0.5 0.5 0.5");
     }
-};
-// Save camera settings in sessionStorage
-sessionStorage.setItem("camera-fov", 60);
-sessionStorage.setItem("camera-position", JSON.stringify([0, 1.6, 4]));
+    showToast("🔄 View reset");
+  });
+}
 
-// On load, retrieve and apply the settings
-window.addEventListener("load", function () {
-  const cameraElement = document.querySelector("a-entity[camera]");
-  
-  const fov = sessionStorage.getItem("camera-fov");
-  const position = JSON.parse(sessionStorage.getItem("camera-position"));
-  
-  if (fov) {
-    cameraElement.setAttribute('camera', 'fov', fov);
-  }
-  if (position) {
-    cameraElement.setAttribute('position', position.join(" "));
-  }
-});
-
-
+// 🤝 Make model interactive (rotate, zoom)
+AFRAME.registerComponent('interactive-model', {
+  init: function () {
+    this.rotation = this.el.getAttribute('rotation') || { x: 0, y: 0, z: 0 };
+    this.scale = this.el.getAttribute
