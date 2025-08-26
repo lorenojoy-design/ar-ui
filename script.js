@@ -30,7 +30,7 @@ if (langBtn && langMenu){
   });
 }
 
-// sound toggle (icon swap only; hook up to real audio later)
+// sound toggle
 if (soundBtn){
   soundBtn.addEventListener("click", ()=>{
     const icon = soundBtn.querySelector("i");
@@ -41,7 +41,6 @@ if (soundBtn){
   });
 }
 
-// camera & video (stubs – integrate with your capture pipeline later)
 // 📸 Snapshot
 if (cameraBtn) {
   cameraBtn.addEventListener("click", () => {
@@ -107,11 +106,10 @@ if (videoBtn) {
   });
 }
 
-
-// reset view (stub – useful if you later add transforms)
+// reset
 if (resetBtn){ resetBtn.addEventListener("click", ()=> showToast("View reset")); }
 
-// toast helper
+// toast
 function showToast(msg){
   if (!toast) return;
   toast.textContent = msg;
@@ -120,53 +118,37 @@ function showToast(msg){
   showToast._t = setTimeout(()=> toast.classList.add("hidden"), 1800);
 }
 
-async function initCamera() {
-  try {
-    let constraints = {
-      video: {
-        facingMode: /Mobi|Android/i.test(navigator.userAgent)
-          ? { ideal: "environment" } // phone → back cam
-          : { ideal: "user" }        // desktop → front cam
-      },
-      audio: false
-    };
+// ✅ AR.js camera setup
+window.onload = function() {
+  var arToolkitSource = new THREEx.ArToolkitSource({
+    sourceType: 'webcam',
+    facingMode: 'environment'  // start with back cam
+  });
 
-    const stream = await navigator.mediaDevices.getUserMedia(constraints);
-    const videoEl = document.querySelector("video");
-    videoEl.srcObject = stream;
-    await videoEl.play();
-  } catch (err) {
-    console.error("Camera init error:", err);
-    alert("Camera access failed: " + err.message);
-  }
-}
-
-// auto run
-window.addEventListener("load", initCamera);
-
-
-document.addEventListener("DOMContentLoaded", initCamera);
- window.onload = function() {
-    var arToolkitSource = new THREEx.ArToolkitSource({
-      sourceType: 'webcam',
-      facingMode: { exact: 'environment' } // Force back camera
-    });
-
-    arToolkitSource.init(function onReady(){
-      setTimeout(() => {
-        onResize();
-      }, 2000);
-    });
-
-    window.addEventListener('resize', function(){
+  arToolkitSource.init(function onReady(){
+    setTimeout(() => {
       onResize();
-    });
+    }, 2000);
+  });
 
-    function onResize(){
-      arToolkitSource.onResizeElement();
-      arToolkitSource.copyElementSizeTo(renderer.domElement);
-      if(arToolkitContext.arController !== null){
-        arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
-      }
+  window.addEventListener('resize', onResize);
+
+  function onResize(){
+    arToolkitSource.onResizeElement();
+    arToolkitSource.copyElementSizeTo(renderer.domElement);
+    if(arToolkitContext.arController !== null){
+      arToolkitSource.copyElementSizeTo(arToolkitContext.arController.canvas);
     }
+  }
+
+  // ✅ toggle front/back camera
+  if (cameraBtn){
+    cameraBtn.addEventListener("click", () => {
+      const newMode = (arToolkitSource.parameters.facingMode === 'environment')
+        ? 'user' : 'environment';
+      arToolkitSource.parameters.facingMode = newMode;
+      arToolkitSource.init(onResize);
+      showToast(`Camera switched to ${newMode === 'user' ? 'Front' : 'Back'}`);
+    });
+  }
 };
