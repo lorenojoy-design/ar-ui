@@ -5,41 +5,44 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AR Museum</title>
   <link rel="stylesheet" href="style.css">
+  <!-- Font Awesome (icons) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <!-- A-Frame + AR.js -->
+  <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
+  <script src="https://cdn.rawgit.com/AR-js-org/AR.js/master/aframe/build/aframe-ar.js"></script>
 </head>
 <body>
-  <header>
-    <h1 class="title">AR Museum</h1>
-    <nav>
-      <select id="languageSwitcher">
-        <option value="en">English</option>
-        <option value="ph">Tagalog</option>
-        <option value="zh">中文</option>
-        <option value="jp">日本語</option>
-      </select>
-    </nav>
-  </header>
 
-  <main>
-    <section class="card glass">
-      <h2 data-translate="welcome">Welcome to the AR Museum</h2>
-      <p data-translate="description">Explore history with 3D models, AR, and interactive learning.</p>
-      <button class="btn" id="startBtn" data-translate="start">Start Experience</button>
-    </section>
+  <!-- Map Button -->
+  <button id="mapBtn" class="icon-btn glass-btn top-left">
+    <i class="fa-solid fa-map"></i>
+  </button>
 
-    <section class="card glass">
-      <h2 data-translate="features">Features</h2>
-      <ul>
-        <li data-translate="feature1">3D Models and Animations</li>
-        <li data-translate="feature2">Augmented Reality Exploration</li>
-        <li data-translate="feature3">Multilingual Support</li>
-        <li data-translate="feature4">Interactive Timeline</li>
-      </ul>
-    </section>
-  </main>
+  <!-- Language Dropdown -->
+  <select id="languageSwitcher" class="glass-dropdown top-right">
+    <option value="en">EN</option>
+    <option value="ph">PH</option>
+    <option value="zh">中文</option>
+    <option value="jp">日本語</option>
+  </select>
 
-  <footer>
-    <p>&copy; 2025 AR Museum Project</p>
-  </footer>
+  <!-- Bottom Buttons -->
+  <div class="bottom-center-group">
+    <button id="cameraBtn" class="icon-btn glass-btn">
+      <i class="fa-solid fa-camera"></i>
+    </button>
+    <button id="videoBtn" class="icon-btn glass-btn">
+      <i class="fa-solid fa-video"></i>
+    </button>
+  </div>
+
+  <!-- AR Scene -->
+  <a-scene embedded arjs>
+    <a-marker preset="hiro">
+      <a-box position="0 0.5 0" rotation="0 45 0" color="red"></a-box>
+    </a-marker>
+    <a-entity camera></a-entity>
+  </a-scene>
 
   <script src="script.js"></script>
 </body>
