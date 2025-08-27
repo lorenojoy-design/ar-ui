@@ -1,5 +1,5 @@
 :root {
-  --dark-green: rgba(0, 40, 20, 0.65);
+  --dark-green: rgba(1, 33, 17, 0.65);
   --dark-green-active: rgba(0, 60, 30, 0.8);
   --white: #ffffff;
 }
@@ -43,23 +43,54 @@ a-scene {
   pointer-events: none;
 }
 
-/* Bottom-Center Group */
+/* Bottom buttons container */
 .bottom-center-group {
   position: fixed;
-  bottom: 25px;
+  bottom: 20px;
   left: 50%;
   transform: translateX(-50%);
   display: flex;
-  gap: 20px;
+  gap: 15px;
   z-index: 1000;
 }
 
-/* Icon Buttons size */
+/* Circular buttons, soft glass dark green */
 .icon-btn {
   width: 70px;
   height: 70px;
+  border-radius: 50%; /* bilog */
+  background: rgba(0, 69, 45, 0.6); /* soft green */
+  color: #ffffff;
+  border: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   font-size: 2rem;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  transition: background 0.3s, transform 0.2s;
+  outline-offset: 1px;
 }
+
+.icon-btn:active {
+  background: rgba(14, 163, 113, 0.7);
+  transform: scale(0.95);
+}
+
+/* Mobile adjustments */
+@media (max-width: 480px) {
+  .icon-btn {
+    width: 55px;
+    height: 55px;
+    font-size: 1.6rem;
+  }
+  .bottom-center-group {
+    gap: 10px;
+    bottom: 12px;
+  }
+}
+
+
 
 /* Map Button (top-left) */
 .top-left {
