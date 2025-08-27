@@ -1,6 +1,4 @@
-// ---------------------------
 // Camera Button → Screenshot
-// ---------------------------
 const cameraBtn = document.getElementById("cameraBtn");
 cameraBtn.addEventListener("click", () => {
   const sceneEl = document.querySelector("a-scene");
@@ -15,9 +13,7 @@ cameraBtn.addEventListener("click", () => {
   a.click();
 });
 
-// ---------------------------
 // Video Button → Hold to Record
-// ---------------------------
 const videoBtn = document.getElementById("videoBtn");
 let mediaRecorder;
 let recordedChunks = [];
@@ -51,28 +47,12 @@ videoBtn.addEventListener("pointerdown", () => {
 
   mediaRecorder.start();
   isRecording = true;
-  videoBtn.style.backgroundColor = "var(--dark-green-active)";
+  videoBtn.style.backgroundColor = "rgba(14, 163, 113, 0.7)";
 });
 
 videoBtn.addEventListener("pointerup", () => {
   if (!isRecording || !mediaRecorder) return;
   mediaRecorder.stop();
   isRecording = false;
-  videoBtn.style.backgroundColor = "var(--dark-green)";
-});
-
-// ---------------------------
-// Map Button placeholder
-// ---------------------------
-const mapBtn = document.getElementById("mapBtn");
-mapBtn.addEventListener("click", () => {
-  alert("Map overlay coming soon!");
-});
-
-// ---------------------------
-// Language Dropdown placeholder
-// ---------------------------
-const languageSwitcher = document.getElementById("languageSwitcher");
-languageSwitcher.addEventListener("change", e => {
-  alert("Language switched to " + e.target.value);
+  videoBtn.style.backgroundColor = "rgba(33, 199, 138, 0.6)";
 });
