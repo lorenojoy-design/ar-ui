@@ -1,163 +1,46 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8" />
-    <title>AR Museum App</title>
-    <script src="https://aframe.io/releases/1.4.1/aframe.min.js"></script>
-    <!-- ✅ Updated AR.js (latest build) -->
-    <script src="https://cdn.jsdelivr.net/gh/AR-js-org/AR.js/aframe/build/aframe-ar.min.js"></script>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AR Museum</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1 class="title">AR Museum</h1>
+    <nav>
+      <select id="languageSwitcher">
+        <option value="en">English</option>
+        <option value="ph">Tagalog</option>
+        <option value="zh">中文</option>
+        <option value="jp">日本語</option>
+      </select>
+    </nav>
+  </header>
 
-    <style>
-      body {
-        margin: 0;
-        overflow: hidden;
-        font-family: Arial, sans-serif;
-      }
-      #ui {
-        position: absolute;
-        top: 10px;
-        left: 10px;
-        z-index: 9999;
-        pointer-events: auto; /* ✅ Ensure UI clicks work */
-      }
-      button {
-        margin: 5px;
-        padding: 10px;
-        border: none;
-        border-radius: 8px;
-        background: #007bff;
-        color: white;
-        cursor: pointer;
-      }
-      button:hover {
-        background: #0056b3;
-      }
-      #mapPanel {
-        position: absolute;
-        bottom: 10px;
-        left: 10px;
-        background: rgba(255, 255, 255, 0.9);
-        padding: 10px;
-        border-radius: 8px;
-        display: none;
-        z-index: 9999;
-        pointer-events: auto;
-      }
-    </style>
-  </head>
-  <body>
-    <!-- ✅ AR scene -->
-    <a-scene
-      embedded
-      arjs="sourceType: webcam; facingMode: environment; debugUIEnabled: false;"
-      vr-mode-ui="enabled: false"
-      renderer="antialias: true; alpha: true"
-    >
-      <a-marker preset="hiro">
-        <a-box
-          position="0 0.5 0"
-          material="color: red"
-          animation="property: rotation; to: 0 360 0; loop: true; dur: 3000"
-        ></a-box>
-      </a-marker>
-      <a-entity camera></a-entity>
-    </a-scene>
+  <main>
+    <section class="card glass">
+      <h2 data-translate="welcome">Welcome to the AR Museum</h2>
+      <p data-translate="description">Explore history with 3D models, AR, and interactive learning.</p>
+      <button class="btn" id="startBtn" data-translate="start">Start Experience</button>
+    </section>
 
-    <!-- ✅ UI -->
-    <div id="ui">
-      <button id="snapshotBtn">📸 Snapshot</button>
-      <button id="recordBtn">🎥 Start Recording</button>
-      <button id="mapBtn">🗺️ Map</button>
-      <button id="langBtn">🌐 Language</button>
-      <button id="soundBtn">🔊 Sound</button>
-      <button id="resetBtn">♻️ Reset</button>
-    </div>
+    <section class="card glass">
+      <h2 data-translate="features">Features</h2>
+      <ul>
+        <li data-translate="feature1">3D Models and Animations</li>
+        <li data-translate="feature2">Augmented Reality Exploration</li>
+        <li data-translate="feature3">Multilingual Support</li>
+        <li data-translate="feature4">Interactive Timeline</li>
+      </ul>
+    </section>
+  </main>
 
-    <!-- ✅ Map Panel -->
-    <div id="mapPanel">
-      <p><strong>Museum Map</strong></p>
-      <p>[Map content here]</p>
-    </div>
+  <footer>
+    <p>&copy; 2025 AR Museum Project</p>
+  </footer>
 
-    <script>
-      const snapshotBtn = document.getElementById("snapshotBtn");
-      const recordBtn = document.getElementById("recordBtn");
-      const mapBtn = document.getElementById("mapBtn");
-      const langBtn = document.getElementById("langBtn");
-      const soundBtn = document.getElementById("soundBtn");
-      const resetBtn = document.getElementById("resetBtn");
-      const mapPanel = document.getElementById("mapPanel");
-
-      let recorder, chunks = [];
-      let isRecording = false;
-      let currentLang = "en";
-      let soundOn = true;
-
-      // ✅ Helper to safely get canvas
-      function getCanvas() {
-        const sceneEl = document.querySelector("a-scene");
-        return sceneEl && sceneEl.renderer ? sceneEl.renderer.domElement : null;
-      }
-
-      // ✅ Snapshot
-      snapshotBtn.addEventListener("click", () => {
-        const canvas = getCanvas();
-        if (!canvas) return alert("⚠️ Scene not ready yet!");
-        const dataUrl = canvas.toDataURL("image/png");
-        const a = document.createElement("a");
-        a.href = dataUrl;
-        a.download = "snapshot.png";
-        a.click();
-      });
-
-      // ✅ Video Recording
-      recordBtn.addEventListener("click", () => {
-        const canvas = getCanvas();
-        if (!canvas) return alert("⚠️ Scene not ready yet!");
-
-        if (!isRecording) {
-          recorder = new MediaRecorder(canvas.captureStream(30), { mimeType: "video/webm" });
-          recorder.ondataavailable = e => chunks.push(e.data);
-          recorder.onstop = () => {
-            const blob = new Blob(chunks, { type: "video/webm" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement("a");
-            a.href = url;
-            a.download = "recording.webm";
-            a.click();
-            chunks = [];
-          };
-          recorder.start();
-          isRecording = true;
-          recordBtn.textContent = "⏹ Stop Recording";
-        } else {
-          recorder.stop();
-          isRecording = false;
-          recordBtn.textContent = "🎥 Start Recording";
-        }
-      });
-
-      // ✅ Map Toggle
-      mapBtn.addEventListener("click", () => {
-        mapPanel.style.display = mapPanel.style.display === "none" ? "block" : "none";
-      });
-
-      // ✅ Language Toggle
-      langBtn.addEventListener("click", () => {
-        currentLang = currentLang === "en" ? "jp" : "en";
-        alert("Language switched to: " + (currentLang === "en" ? "English" : "Japanese"));
-      });
-
-      // ✅ Sound Toggle
-      soundBtn.addEventListener("click", () => {
-        soundOn = !soundOn;
-        alert("Sound " + (soundOn ? "On" : "Off"));
-      });
-
-      // ✅ Reset
-      resetBtn.addEventListener("click", () => {
-        location.reload();
-      });
-    </script>
-  </body>
+  <script src="script.js"></script>
+</body>
 </html>
