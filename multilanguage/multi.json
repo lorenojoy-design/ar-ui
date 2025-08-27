@@ -1,1 +1,57 @@
-
+{
+  "marker1" :{
+    "en": {
+      "title": "Golden Tara",
+      "description": "The Golden Tara is a 21-karat gold statue of a Buddhist female deity (likely Tara) discovered in 1917 in Agusan, Mindanao, Philippines. Dating back to around the 9th–10th century, it reflects strong Indian-Hindu-Buddhist cultural influence in pre-colonial Philippines. Today, it is housed at the Field Museum in Chicago."
+    },
+    "ph": {
+      "title": "Golden Tara",
+      "description": "Ang Golden Tara ay isang estatwa na yari sa 21-karat na ginto ng diyosang Budista na natagpuan noong 1917 sa Agusan, Mindanao. Tinatayang mula ito noong ika-9–10 siglo at nagpapakita ng impluwensyang Hindu-Budista sa sinaunang Pilipinas."
+    },
+    "zh": {
+      "title": "Golden Tara",
+      "description": "黄金塔拉是一尊21克拉黄金制成的佛教女神像, 1917年在菲律宾棉兰老岛阿古桑被发现。它可追溯至9至10世纪, 显示了古代菲律宾受到印度教与佛教的影响."
+    },
+    "jp": {
+      "title": "Golden Tara",
+      "description": "ゴールデン・ターラは、21カラットの金で作られた仏教の女神像で、1917年にフィリピンのミンダナオ島アグサンで発見されました。9〜10世紀頃のもので、古代フィリピンにおけるヒンドゥー教・仏教の影響を示しています."
+    }
+  },
+  "marker2": {
+    "en": {
+      "title": "Staryy Night by Van Gogh",
+      "description": "arry Night is a famous 1889 painting by Vincent van Gogh, showing a bright moon, stars, and a swirling night sky. It is one of the most renowned artworks in the world."
+    },
+    "ph": {
+      "title": "Staryy Night by Van Gogh",
+      "description": "Ang Starry Night ay isang tanyag na painting ni Vincent van Gogh noong 1889, na nagpapakita ng maliwanag na buwan, mga bituin, at paikot-ikot na langit sa gabi. Isa ito sa pinakasikat na obra sa buong mundo.."
+    },
+    "zh": {
+      "title": "Staryy Night by Van Gogh",
+      "description": "星夜是文森特·梵高在1889年创作的著名画作, 描绘了明亮的月亮、星星和旋转的夜空。它是世界上最著名的艺术作品之一。"
+    },
+    "jp": {
+      "title": "Staryy Night by Van Gogh",
+      "description": "星月夜（スターリー・ナイト）**は、フィンセント・ファン・ゴッホが1889年に描いた有名な絵画で、明るい月や星、渦巻く夜空を表現しています。世界で最も有名な作品の一つです。"
+    }
+  },
+  "marker3": {
+    "en": {
+      "title": "Golden",
+      "description": "The Golden Pharaoh Mask, made of gold and precious stones, symbolizes royalty, divinity, and protection. Discovered in Tutankhamun's tomb, it remains an icon of Ancient Egypt."
+    },
+    "ph": {
+      "title": "Golden",
+      "description": "The Golden Pharaoh Mask, made of gold and precious stones, symbolizes royalty, divinity, and protection. Discovered in Tutankhamun's tomb, it remains an icon of Ancient Egypt."
+    },
+    "zh": {
+      "title": "Golden",
+      "description": "黄金法老面具由黄金和宝石制成，象征着王权、神性和守护。它在图坦卡蒙的陵墓中被发现，并成为古埃及的象征。"
+    },
+    "jp": {
+      "title": "Golden",
+      "description": "黄金のファラオのマスクは、金と宝石で作られ、王権・神性・守護を象徴しています。ツタンカーメンの墓で発見され、古代エジプトの象徴として知られています。"
+    }
+}
+  }
+ 
