@@ -1,29 +1,21 @@
-// Mobile-friendly screenshot function
+// Camera button → screenshot
 const cameraBtn = document.getElementById("cameraBtn");
-cameraBtn.addEventListener("click", async () => {
+cameraBtn.addEventListener("click", () => {
   const sceneEl = document.querySelector("a-scene");
   if (!sceneEl.renderer) return;
-
-  // Get the canvas
   const canvas = sceneEl.renderer.domElement;
 
-  try {
-    // Convert to blob for mobile compatibility
-    canvas.toBlob((blob) => {
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = "ar_capture.png";
-      a.click();
-      URL.revokeObjectURL(url);
-    }, "image/png");
-  } catch (err) {
-    console.error("Screenshot failed:", err);
-    alert("Cannot capture screenshot on this device.");
-  }
+  canvas.toBlob((blob) => {
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "ar_capture.png";
+    a.click();
+    URL.revokeObjectURL(url);
+  }, "image/png");
 });
 
-// Video Hold-to-Record (mobile-compatible)
+// Video button → hold to record
 const videoBtn = document.getElementById("videoBtn");
 let mediaRecorder;
 let recordedChunks = [];
@@ -31,14 +23,13 @@ let isRecording = false;
 
 videoBtn.addEventListener("pointerdown", () => {
   if (isRecording) return;
-
   const sceneEl = document.querySelector("a-scene");
   if (!sceneEl.renderer) return;
 
   const canvas = sceneEl.renderer.domElement;
-  recordedChunks = [];
   const stream = canvas.captureStream(30);
 
+  recordedChunks = [];
   try {
     mediaRecorder = new MediaRecorder(stream, { mimeType: 'video/webm' });
   } catch (err) {
@@ -46,10 +37,7 @@ videoBtn.addEventListener("pointerdown", () => {
     return;
   }
 
-  mediaRecorder.ondataavailable = e => {
-    if (e.data.size > 0) recordedChunks.push(e.data);
-  };
-
+  mediaRecorder.ondataavailable = e => { if (e.data.size > 0) recordedChunks.push(e.data); };
   mediaRecorder.onstop = () => {
     const blob = new Blob(recordedChunks, { type: 'video/webm' });
     const url = URL.createObjectURL(blob);
