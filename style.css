@@ -1,49 +1,14 @@
-:root {
-  --dark-green: rgba(1, 33, 17, 0.65);
-  --dark-green-active: rgba(0, 60, 30, 0.8);
-  --white: #ffffff;
-}
-
-/* Fullscreen AR camera */
+/* Ensure AR scene covers full screen */
 a-scene {
-  position: fixed !important;
+  position: absolute;
   top: 0;
   left: 0;
-  width: 100% !important;
-  height: 100% !important;
-  z-index: 0;
-  background: black;
+  width: 100vw;
+  height: 100vh;
+  touch-action: manipulation;
 }
 
-/* Shared Glass Style */
-.glass-btn {
-  background: var(--dark-green);
-  color: var(--white);
-  backdrop-filter: blur(14px);
-  border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  cursor: pointer;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  transition: background 0.3s, transform 0.2s;
-  z-index: 1000;
-  position: fixed;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-
-.glass-btn:active {
-  background: var(--dark-green-active);
-  transform: scale(0.95);
-}
-
-/* Icon size fix */
-.icon-btn i {
-  font-size: 1.5rem;
-  pointer-events: none;
-}
-
-/* Bottom buttons container */
+/* Bottom buttons group */
 .bottom-center-group {
   position: fixed;
   bottom: 20px;
@@ -54,12 +19,12 @@ a-scene {
   z-index: 1000;
 }
 
-/* Circular buttons, soft glass dark green */
+/* Circular icon buttons */
 .icon-btn {
   width: 70px;
   height: 70px;
-  border-radius: 50%; /* bilog */
-  background: rgba(0, 69, 45, 0.6); /* soft green */
+  border-radius: 50%;
+  background: rgba(33, 199, 138, 0.6);
   color: #ffffff;
   border: none;
   display: flex;
@@ -69,7 +34,6 @@ a-scene {
   cursor: pointer;
   backdrop-filter: blur(12px);
   transition: background 0.3s, transform 0.2s;
-  outline-offset: 1px;
 }
 
 .icon-btn:active {
@@ -77,46 +41,61 @@ a-scene {
   transform: scale(0.95);
 }
 
-/* Mobile adjustments */
+/* Map button upper-left */
+.top-left {
+  top: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  font-size: 1.5rem;
+}
+
+/* Language dropdown upper-right */
+.top-right {
+  top: 20px;
+  right: 20px;
+  padding: 0.4rem 0.6rem;
+  font-size: 1rem;
+}
+
+/* Mobile adjustments to fit everything */
 @media (max-width: 480px) {
   .icon-btn {
     width: 55px;
     height: 55px;
     font-size: 1.6rem;
   }
+
   .bottom-center-group {
     gap: 10px;
     bottom: 12px;
   }
+
+  .top-left {
+    width: 50px;
+    height: 50px;
+    font-size: 1.4rem;
+    top: 12px;
+    left: 12px;
+  }
+
+  .top-right {
+    padding: 0.3rem 0.5rem;
+    font-size: 0.85rem;
+    top: 12px;
+    right: 12px;
+  }
+
+  a-scene {
+    width: 100%;
+    height: 100%;
+  }
 }
 
-
-
-/* Map Button (top-left) */
-.top-left {
-  top: 20px;
-  left: 20px;
-  width: 60px;
-  height: 60px;
-}
-
-/* Language Dropdown (top-right) */
-.glass-dropdown {
-  top: 20px;
-  right: 20px;
-  padding: 0.4rem 0.6rem;
-  border-radius: 12px;
-  font-size: 1rem;
-  background: var(--dark-green);
-  color: var(--white);
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  backdrop-filter: blur(14px);
-  position: fixed;
-  z-index: 1000;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
-}
-
-.glass-dropdown:focus {
-  outline: none;
-  background: var(--dark-green-active);
+/* Prevent scrolling/zoom on mobile */
+html, body {
+  max-width: 100vw;
+  max-height: 100vh;
+  overflow: hidden;
+  touch-action: manipulation;
 }
