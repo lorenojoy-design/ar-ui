@@ -69,3 +69,48 @@ document.getElementById("mapBtn").addEventListener("click", () => {
 document.getElementById("languageSwitcher").addEventListener("change", e => {
   alert("Language switched to " + e.target.value);
 });
+// Load translations
+let translations = {};
+fetch('multilanguage/multi.json')
+  .then(res => res.json())
+  .then(data => translations = data);
+
+// Marker handler for 3D model, text, and sound
+AFRAME.registerComponent('markerhandler', {
+  schema: { markerId: {type: 'string'} },
+  init: function () {
+    const marker = this.el;
+    const id = this.data.markerId;
+    const model = marker.querySelector('a-gltf-model');
+    const textEl = marker.querySelector('a-text');
+    const soundEl = marker.querySelector('a-sound');
+
+    marker.addEventListener('markerFound', () => {
+      model.setAttribute('visible', true);
+      soundEl.components.sound.playSound();
+
+      // Update text based on selected language
+      const lang = document.getElementById('languageSwitcher').value;
+      if (translations[lang] && translations[lang][id]){
+        textEl.setAttribute('value', translations[lang][id]);
+      }
+    });
+
+    marker.addEventListener('markerLost', () => {
+      model.setAttribute('visible', false);
+      soundEl.components.sound.stopSound();
+    });
+  }
+});
+
+// Language switcher
+document.getElementById("languageSwitcher").addEventListener("change", e => {
+  const lang = e.target.value;
+
+  ['marker1','marker2'].forEach(id => {
+    const textEl = document.getElementById(id+'Text');
+    if(translations[lang] && translations[lang][id]){
+      textEl.setAttribute('value', translations[lang][id]);
+    }
+  });
+});
