@@ -1,4 +1,4 @@
-/* Ensure AR scene covers full screen */
+/* Fullscreen AR scene */
 a-scene {
   position: absolute;
   top: 0;
@@ -8,7 +8,7 @@ a-scene {
   touch-action: manipulation;
 }
 
-/* Bottom buttons group */
+/* Bottom buttons container */
 .bottom-center-group {
   position: fixed;
   bottom: 20px;
@@ -19,7 +19,7 @@ a-scene {
   z-index: 1000;
 }
 
-/* Circular icon buttons */
+/* Circular buttons soft glass dark green */
 .icon-btn {
   width: 70px;
   height: 70px;
@@ -58,7 +58,7 @@ a-scene {
   font-size: 1rem;
 }
 
-/* Mobile adjustments to fit everything */
+/* Mobile adjustments */
 @media (max-width: 480px) {
   .icon-btn {
     width: 55px;
