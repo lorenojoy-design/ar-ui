@@ -19,7 +19,7 @@ a-scene {
   z-index: 1000;
 }
 
-/* Circular buttons soft glass dark green */
+/* Circular icon buttons */
 .icon-btn {
   width: 70px;
   height: 70px;
@@ -41,21 +41,25 @@ a-scene {
   transform: scale(0.95);
 }
 
-/* Map button upper-left */
+/* Map button top-left */
 .top-left {
+  position: fixed;
   top: 20px;
   left: 20px;
   width: 60px;
   height: 60px;
   font-size: 1.5rem;
+  z-index: 1000;
 }
 
-/* Language dropdown upper-right */
+/* Language dropdown top-right */
 .top-right {
+  position: fixed;
   top: 20px;
   right: 20px;
   padding: 0.4rem 0.6rem;
   font-size: 1rem;
+  z-index: 1000;
 }
 
 /* Mobile adjustments */
@@ -87,12 +91,14 @@ a-scene {
   }
 
   a-scene {
-    width: 100%;
-    height: 100%;
+    width: 100vw;
+    height: 100vh;
+    transform: scale(0.95); /* slightly smaller to fit top UI */
+    transform-origin: top center;
   }
 }
 
-/* Prevent scrolling/zoom on mobile */
+/* Prevent zoom and scrolling on mobile */
 html, body {
   max-width: 100vw;
   max-height: 100vh;
