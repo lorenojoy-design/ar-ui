@@ -60,7 +60,7 @@ a-scene {
   padding: 0.4rem 0.6rem;
   font-size: 1rem;
   z-index: 1000;
-  background-color: rgb(219, 146, 78);
+  background-color: rgb(22, 80, 40);
 }
 
 /* Mobile adjustments */
@@ -106,3 +106,4 @@ html, body {
   overflow: hidden;
   touch-action: manipulation;
 }
+
